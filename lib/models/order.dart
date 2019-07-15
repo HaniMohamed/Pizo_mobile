@@ -1,23 +1,15 @@
 import 'package:intl/intl.dart';
 
 class Order {
-  String orderImage;
   String orderName;
-  String orderCategory;
+  int orderCategory;
   String orderDescribtion;
   String orderOwner;
   String orderEnginner;
   bool finished;
 
-  Order(
-      String orderImage,
-      String orderName,
-      String orderCategory,
-      String orderDescribtion,
-      String orderOwner,
-      String orderEnginner,
-      bool finished) {
-    this.orderImage = orderImage;
+  Order(String orderName, int orderCategory, String orderDescribtion,
+      String orderOwner, String orderEnginner, bool finished) {
     this.orderName = orderName;
     this.orderCategory = orderCategory;
     this.orderDescribtion = orderDescribtion;
@@ -26,15 +18,11 @@ class Order {
     this.finished = finished;
   }
 
-  String getImage() {
-    return orderImage;
-  }
-
   String getName() {
     return orderName;
   }
 
-  String getCategory() {
+  int getCategory() {
     return orderCategory;
   }
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pizo/models/order.dart';
-import 'package:pizo/ui/dialogs/request_Maintanance.dart';
+import 'package:pizo/resources/firebase/orders.dart';
+import 'package:pizo/ui/screens/request_Maintanance.dart';
 import 'package:pizo/widgets/app_header.dart';
 import 'package:pizo/widgets/lists/orders_list.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrdersPage extends StatefulWidget {
   @override
@@ -13,96 +15,35 @@ class OrdersPage extends StatefulWidget {
 }
 
 class _OrdersPage extends State<OrdersPage> {
+  SharedPreferences sharedPreferences;
+  String mail;
   List<String> titles = [
     "Maintenance Orders",
   ];
 
   List<Order> orders = new List();
 
+  Future<List<Order>> getOrders(String mail) async {
+    return await MaintainOrders().getOrders(context, mail);
+  }
+
+  Future<String> getMail() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.getString("mail");
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    orders.add(Order(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "First Order",
-        "Optical",
-        "descripe",
-        "Hani Hussein",
-        "proga",
-        true));
-
-    orders.add(Order(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "First Order",
-        "Optical",
-        "descripe",
-        "Hani Hussein",
-        "proga",
-        false));
-
-    orders.add(Order(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "First Order",
-        "Optical",
-        "descripe",
-        "Hani Hussein",
-        null,
-        false));
-
-    orders.add(Order(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "First Order",
-        "Optical",
-        "descripe",
-        "Hani Hussein",
-        null,
-        true));
-
-    orders.add(Order(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "First Order",
-        "Optical",
-        "descripe",
-        "Hani Hussein",
-        "proga",
-        false));
-
-    orders.add(Order(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "First Order",
-        "Optical",
-        "descripe",
-        "Hani Hussein",
-        null,
-        true));
-
-    orders.add(Order(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "First Order",
-        "Optical",
-        "descripe",
-        "Hani Hussein",
-        "proga",
-        false));
-
-    orders.add(Order(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "First Order",
-        "Optical",
-        "descripe",
-        "Hani Hussein",
-        null,
-        true));
-
-    orders.add(Order(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "First Order",
-        "Optical",
-        "descripe",
-        "Hani Hussein",
-        "proga",
-        false));
+    getMail().then((mail) {
+      print(mail);
+      getOrders(mail).then((orders) {
+        setState(() {
+          this.orders = orders;
+          print(orders.length.toString() + "****************");
+        });
+      });
+    });
   }
 
   @override
@@ -134,7 +75,11 @@ class _OrdersPage extends State<OrdersPage> {
                 ],
               ),
             ),
-            OrdersList(orders, orders.length),
+            orders.length > 0
+                ? Expanded(
+                    child: OrdersList(orders, orders.length),
+                  )
+                : Container(),
           ],
         ),
         Positioned.fill(
@@ -144,7 +89,12 @@ class _OrdersPage extends State<OrdersPage> {
                 margin: EdgeInsets.all(10),
                 child: FloatingActionButton(
                   onPressed: () {
-                    _showDialog();
+                    // _showDialog();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RequestMaintenance()),
+                    );
                   },
                   backgroundColor: Colors.blue,
                   child: Icon(Icons.add),
@@ -152,21 +102,6 @@ class _OrdersPage extends State<OrdersPage> {
               )),
         )
       ],
-    );
-  }
-
-  void _showDialog() {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Request maintenance order"),
-          content: RequestMaintenance(),
-          contentPadding: EdgeInsets.all(0),
-        );
-      },
     );
   }
 }

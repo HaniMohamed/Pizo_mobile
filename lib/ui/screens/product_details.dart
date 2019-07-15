@@ -64,7 +64,7 @@ class _ProductDetails extends State<ProductDetails> {
                                       padding: EdgeInsets.all(5),
                                       child: Icon(
                                         Icons.favorite,
-                                        size: 25,
+                                        size: 20,
                                         color: Colors.red,
                                       ),
                                     )),
@@ -83,12 +83,12 @@ class _ProductDetails extends State<ProductDetails> {
                                             MainAxisAlignment.center,
                                         children: <Widget>[
                                           Icon(Icons.chat_bubble,
-                                              size: 25, color: Colors.white),
+                                              size: 20, color: Colors.white),
                                           Text(
                                             " Contact",
                                             style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 16),
+                                                fontSize: 14),
                                           )
                                         ],
                                       )),

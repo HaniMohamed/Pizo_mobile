@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1011644039866",
+    "firebase_url": "https://pizodoctor.firebaseio.com",
+    "project_id": "pizodoctor",
+    "storage_bucket": "pizodoctor.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011644039866:android:32157996b4ab3006",
+        "android_client_info": {
+          "package_name": "com.proga.pizodoctors"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1011644039866-2m3h6coq420cjthq2f5q79urfr1jjsqr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.proga.pizodoctors",
+            "certificate_hash": "05596dfacd23871e43ee6f962b4d2fe55ce1e5d6"
+          }
+        },
+        {
+          "client_id": "1011644039866-qdl1k73s6hasc2ki1tj98kc3ktrjn01j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOtCMyOx1r0O36cpJmsSyEInz3zG9WtSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1011644039866-qdl1k73s6hasc2ki1tj98kc3ktrjn01j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

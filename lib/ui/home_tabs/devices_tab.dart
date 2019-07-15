@@ -18,23 +18,35 @@ class DevicesTab extends StatefulWidget {
 
 class _DevicesTab extends State<DevicesTab>
     with SingleTickerProviderStateMixin {
+  List<Product> products = new List();
+
   List<Product> devices = new List();
   List<DropdownMenuItem<String>> _dropDownMenuItems;
-  String _currentCategory;
+  String _currentSpecialization;
+  int _currentSpecializationIndex;
+  int _currentCategory;
+  int tabIndex = 0;
   List _categories = cons.dev_categories;
   TabController _tabController;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _tabController = new TabController(length: 2, vsync: this);
-    _dropDownMenuItems = getDropDownMenuItems();
-    _currentCategory = _dropDownMenuItems[0].value;
-    DevicesAPi().getDevices().then((products) {
-      devices = products;
-      print("##################  \n" + devices.length.toString());
+    _tabController.addListener(_handleTabSelection);
 
+    _dropDownMenuItems = getDropDownMenuItems();
+    _currentSpecialization = _dropDownMenuItems[0].value;
+    _currentSpecializationIndex = 0;
+    _currentCategory = 2;
+    DevicesAPi().getDevices().then((products) {
+      devices =
+          products.where((p) => p.getCategoryID() == _currentCategory).toList();
+      devices = products
+          .where(
+              (p) => p.getSpecializationID() == _currentSpecializationIndex + 1)
+          .toList();
       setState(() {});
     });
   }
@@ -77,7 +89,7 @@ class _DevicesTab extends State<DevicesTab>
               ),
               DropdownButtonHideUnderline(
                 child: DropdownButton(
-                  value: _currentCategory,
+                  value: _currentSpecialization,
                   items: _dropDownMenuItems,
                   onChanged: changedDropDownItem,
                 ),
@@ -98,7 +110,14 @@ class _DevicesTab extends State<DevicesTab>
   void changedDropDownItem(String selectedCategory) {
     print("Selected city $selectedCategory, we are going to refresh the UI");
     setState(() {
-      _currentCategory = selectedCategory;
+      _currentSpecialization = selectedCategory;
+      _currentSpecializationIndex = _categories.indexOf(selectedCategory);
+      setState(() {
+        devices = products
+            .where((p) =>
+                p.getSpecializationID() == _currentSpecializationIndex + 1)
+            .toList();
+      });
     });
   }
 
@@ -111,5 +130,19 @@ class _DevicesTab extends State<DevicesTab>
           new DropdownMenuItem(value: category, child: new Text(category)));
     }
     return items;
+  }
+
+  _handleTabSelection() {
+    setState(() {
+      tabIndex = _tabController.index;
+      _currentCategory = tabIndex == 0 ? 2 : 1;
+      devices =
+          products.where((p) => p.getCategoryID() == _currentCategory).toList();
+      devices = products
+          .where(
+              (p) => p.getSpecializationID() == _currentSpecializationIndex + 1)
+          .toList();
+      setState(() {});
+    });
   }
 }

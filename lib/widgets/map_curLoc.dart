@@ -3,11 +3,17 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:location/location.dart';
 
+LatLng _lastMapPosition;
+
 class MapLocation extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
     return _MapLocation();
+  }
+
+  LatLng getMapPosition() {
+    return _lastMapPosition;
   }
 }
 
@@ -83,7 +89,6 @@ class _MapLocation extends State<MapLocation> {
           height: 180,
           width: double.infinity,
           child: GoogleMap(
-            
             mapType: MapType.hybrid,
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
@@ -94,12 +99,10 @@ class _MapLocation extends State<MapLocation> {
             myLocationEnabled: true,
           ),
         ),
-
       ],
     );
   }
 
-  LatLng _lastMapPosition;
   void _onCameraMove(CameraPosition position) {
     _lastMapPosition = position.target;
     setState(() {

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pizo/models/order.dart';
+import 'package:pizo/resources/firebase/orders.dart';
 
 class OrderItem extends StatelessWidget {
   Order order;
@@ -72,12 +73,17 @@ class OrderItem extends StatelessWidget {
             Expanded(
               child: Container(),
             ),
-            order.ifFinished()
+            order.ifFinished() || order.getEnginner() == null
                 ? Container(
-                    child: Icon(
-                      Icons.delete_outline,
-                      size: 20,
-                      color: Colors.redAccent,
+                    child: GestureDetector(
+                      onTap: () {
+                        _deleteDialog(context);
+                      },
+                      child: Icon(
+                        Icons.delete_outline,
+                        size: 20,
+                        color: Colors.redAccent,
+                      ),
                     ),
                     margin: EdgeInsets.all(5),
                   )
@@ -86,6 +92,35 @@ class OrderItem extends StatelessWidget {
         ),
         elevation: 1,
       ),
+    );
+  }
+
+  void _deleteDialog(var context) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Delete"),
+          content: new Text("Are you sure to delete this order?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Yes"),
+              onPressed: () {
+                MaintainOrders().deleteOrder(context, order.getName());
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

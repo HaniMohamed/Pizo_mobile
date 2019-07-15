@@ -1,4 +1,4 @@
-package com.proga.pizo;
+package com.proga.pizodoctors;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
