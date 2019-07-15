@@ -25,7 +25,8 @@ class SignIn extends StatefulWidget {
           .then((token) async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
-        Navigator.of(context).pushReplacementNamed("Main_SCREEN");
+        if (token != null)
+          Navigator.of(context).pushReplacementNamed("Main_SCREEN");
       });
     } else {
       Fluttertoast.showToast(
