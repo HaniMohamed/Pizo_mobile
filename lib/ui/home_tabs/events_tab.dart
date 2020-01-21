@@ -1,8 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:pizo/models/event.dart';
-import 'package:pizo/widgets/lists/events_list.dart';
-import 'package:pizo/widgets/lists_item/events_slider_item.dart';
+import 'package:pizo/resources/apis/events_api_provider.dart';
+import 'package:pizo/resources/sharedprefs.dart';
+import 'package:pizo/ui/widgets/lists/events_list.dart';
+import 'package:pizo/ui/widgets/lists_item/events_slider_item.dart';
 
 class EventsTab extends StatefulWidget {
   @override
@@ -17,61 +19,92 @@ class _EventsTab extends State<EventsTab> {
 
   List<Event> events = new List();
 
+  Future<bool> getData() {
+    SharedPrefs().getSharedToken().then((token) {
+      EventsAPI().getEvents(token).then((evns) {
+        setState(() {
+          events = evns;
+          print(events.length.toString());
+        });
+      });
+    });
+
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
-
-    promoEvents.add(EventsSliderItem(
-        "https://www.ballygarryhouse.com/upload/slide_images/bhh005.jpg",
-        "Fantastic Event",
-        "15/09/2020"));
-    promoEvents.add(EventsSliderItem(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "Awesome Event",
-        "15/09/2020"));
-    promoEvents.add(EventsSliderItem(
-        "https://www.clikapad.com/wp-content/uploads/cropped-Clikapad-systems-for-conferences-and-events-1-1.jpg",
-        "Fantastic Event",
-        "15/09/2020"));
-    promoEvents.add(EventsSliderItem(
-        "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
-        "Good Event",
-        "15/09/2020"));
-    promoEvents.add(EventsSliderItem(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "Fantastic Event",
-        "15/09/2020"));
+    // getData();
 
     events.add(Event(
-        "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
-        "Fantastic Event",
-        "2019-09-10",
-        "descripe",
-        "proga company"));
+        id: 1,
+        title: "Test Event",
+        descripe: cons.dummyLorem,
+        image:
+            "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
+        date: "2019-10-10",
+        payed: 0,
+        owner_name: "proga company",
+        owner_id: 5));
+
     events.add(Event(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "Fantastic Event",
-        "2019-09-12",
-        "descripe",
-        "proga company"));
+        id: 2,
+        title: "Medical Event",
+        descripe: cons.dummyLorem,
+        image: "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
+        date: "2020-05-12",
+        payed: 0,
+        owner_name: "company name",
+        owner_id: 5));
+
     events.add(Event(
-        "https://www.clikapad.com/wp-content/uploads/cropped-Clikapad-systems-for-conferences-and-events-1-1.jpg",
-        "Fantastic Event",
-        "2019-09-14",
-        "descripe",
-        "proga company"));
+        id: 3,
+        title: "New Test Event",
+        descripe: cons.dummyLorem,
+        image:
+            "https://www.clikapad.com/wp-content/uploads/cropped-Clikapad-systems-for-conferences-and-events-1-1.jpg",
+        date: "2020-01-10",
+        payed: 0,
+        owner_name: "company",
+        owner_id: 5));
+
     events.add(Event(
-        "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
-        "Fantastic Event",
-        "2019-10-10",
-        "descripe",
-        "proga company"));
+        id: 4,
+        title: "job fair",
+        descripe: cons.dummyLorem,
+        image:
+            "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
+        date: "2020-03-08",
+        payed: 0,
+        owner_name: "proga company",
+        owner_id: 5));
+
     events.add(Event(
-        "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
-        "Fantastic Event",
-        "2019-12-20",
-        "descripe",
-        "proga company"));
+        id: 5,
+        title: "First Event",
+        descripe: cons.dummyLorem,
+        image: "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
+        date: "2019-12-10",
+        payed: 0,
+        owner_name: "proga company",
+        owner_id: 5));
+
+    events.add(Event(
+        id: 6,
+        title: "Test dummy event",
+        descripe: cons.dummyLorem,
+        image: "http://www.goldwater.it/wp-content/uploads/2015/04/Events2.jpg",
+        date: "2019-12-10",
+        payed: 0,
+        owner_name: "proga company",
+        owner_id: 5));
+
+    promoEvents.add(EventsSliderItem(events.elementAt(0)));
+    promoEvents.add(EventsSliderItem(events.elementAt(1)));
+    promoEvents.add(EventsSliderItem(events.elementAt(2)));
+    promoEvents.add(EventsSliderItem(events.elementAt(3)));
+    promoEvents.add(EventsSliderItem(events.elementAt(4)));
   }
 
   @override
@@ -141,7 +174,7 @@ class _EventsTab extends State<EventsTab> {
           padding: EdgeInsets.only(top: 0, left: 10, right: 10),
         ),
         Container(
-          child: events.length > 0
+          child: events != null && events.length > 0
               ? EventsList(events, events.length)
               : Container(),
         ),

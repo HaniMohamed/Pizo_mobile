@@ -3,8 +3,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pizo/resources/constants.dart';
 import 'package:pizo/resources/firebase/orders.dart';
-import 'package:pizo/widgets/map_curLoc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pizo/resources/sharedprefs.dart';
+import 'package:pizo/ui/widgets/map_curLoc.dart';
 
 Constants cons = new Constants();
 
@@ -18,9 +18,8 @@ class RequestMaintenance extends StatefulWidget {
 class _RequestMaintenance extends State<RequestMaintenance> {
   List<DropdownMenuItem<String>> _dropDownMenuItems;
   String _currentCategory;
-  int _currentCategoryIndex = 0;
+  int _currentCategoryIndex = 1;
   List _categories = cons.dev_categories;
-  SharedPreferences sharedPreferences;
   String mail;
 
   final titleController = TextEditingController();
@@ -34,13 +33,8 @@ class _RequestMaintenance extends State<RequestMaintenance> {
 
     _dropDownMenuItems = getDropDownMenuItems();
     _currentCategory = _dropDownMenuItems[0].value;
-    getEmail();
-  }
-
-  void getEmail() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    setState(() {
-      mail = sharedPreferences.getString("mail");
+    SharedPrefs().getSharedMail().then((email) {
+      this.mail = email;
     });
   }
 
@@ -48,6 +42,7 @@ class _RequestMaintenance extends State<RequestMaintenance> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.indigo,
         title: Text("Request Mantainance order"),
       ),
       body: ListView(
@@ -201,7 +196,7 @@ class _RequestMaintenance extends State<RequestMaintenance> {
     print("Selected city $selectedCategory, we are going to refresh the UI");
     setState(() {
       _currentCategory = selectedCategory;
-      _currentCategoryIndex = _categories.indexOf(selectedCategory);
+      _currentCategoryIndex = _categories.indexOf(selectedCategory) + 1;
       print(_currentCategoryIndex.toString() + "%%%%#######");
     });
   }

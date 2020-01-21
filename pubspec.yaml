@@ -35,7 +35,14 @@ dependencies:
   bubble_tab_indicator: "^0.1.4"
   http: ^0.12.0+2
   shared_preferences: ^0.5.3+2
+  image_picker: ^0.6.0+17
   firebase_database: ^3.0.4
+  flutter_launcher_icons: "^0.7.2"
+  
+flutter_icons:
+  android: "launcher_icon" 
+  ios: true
+  image_path: "./asset/images/launcher.png"
 
 dev_dependencies:
   flutter_test:
@@ -57,12 +64,10 @@ flutter:
   assets:
    - ./asset/images/header.jpg
    - ./asset/images/logo.png
-   - ./asset/images/proga.png
-   - ./asset/images/home.jpg
-   - ./asset/images/trussa.png
-   - ./asset/images/trussb.png
+   - ./asset/images/job.png
    - ./asset/images/splash.jpg
-   - ./asset/images/logocut.png
+   - ./asset/images/splash.png
+   - ./asset/images/gears.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pizo/models/product.dart';
 import 'package:pizo/resources/apis/devices_api_provider.dart';
-import 'package:pizo/widgets/lists/home_promo_list.dart';
-import 'package:pizo/widgets/lists/products_list.dart';
+import 'package:pizo/ui/widgets/lists/home_promo_list.dart';
+import 'package:pizo/ui/widgets/lists/products_list.dart';
 
 class DashboardTab extends StatefulWidget {
   @override
@@ -17,12 +17,10 @@ class _DashboardTab extends State<DashboardTab> {
   List<Product> devices = new List();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     DevicesAPi().getDevices().then((products) {
-      devices = products;
-      print("##################  \n" + devices.length.toString());
+      devices = products.where((p) => p.getCategoryID() == 2).toList();
 
       setState(() {});
     });
@@ -70,7 +68,11 @@ class _DashboardTab extends State<DashboardTab> {
           ),
           padding: EdgeInsets.only(top: 10, left: 10, right: 10),
         ),
-        PromoList(devices, devices.length > 6 ? 6 : devices.length),
+        devices != null
+            ? PromoList(devices, devices.length > 6 ? 6 : devices.length)
+            : Container(
+                height: 140,
+              ),
         Container(
           margin: EdgeInsets.only(top: 10),
           child: Row(
@@ -94,7 +96,9 @@ class _DashboardTab extends State<DashboardTab> {
           padding: EdgeInsets.only(top: 0, left: 10, right: 10),
         ),
         Container(
-          child: devices.length > 0 ? ProductsList(devices, 4) : Container(),
+          child: devices != null && devices.length > 0
+              ? ProductsList(devices, 4)
+              : Container(),
         ),
       ],
     );

@@ -26,8 +26,15 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> parsedJson) {
+    String img;
+
+    if (parsedJson['image'].contains("http")) {
+      img = parsedJson['image'];
+    } else {
+      img = cons.domain + parsedJson['image'];
+    }
     return Product(
-        productImage: cons.domain + parsedJson['image'],
+        productImage: img,
         productTitle: parsedJson['title'],
         productPrice: parsedJson['price'],
         productDescribtion: parsedJson['description'],

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pizo/widgets/login.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pizo/resources/sharedprefs.dart';
+import 'package:pizo/ui/widgets/login.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -11,7 +11,6 @@ class SplashScreen extends StatefulWidget {
 
 class SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  SharedPreferences sharedPreferences;
   String token;
 
   void navigationPage() {
@@ -25,10 +24,11 @@ class SplashScreenState extends State<SplashScreen>
   }
 
   void checkLogin() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    setState(() {
-      token = sharedPreferences.getString("token");
-      if (token != null) startTime();
+    SharedPrefs().getSharedToken().then((tok) {
+      setState(() {
+        token = tok;
+        if (token != null) startTime();
+      });
     });
   }
 

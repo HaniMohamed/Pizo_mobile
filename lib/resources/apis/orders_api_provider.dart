@@ -19,19 +19,4 @@ class OrdersAPi {
 
     return null;
   }
-
-  Future<String> getMsg() async {
-    try {
-      Response response = await Dio().get(cons.domain + "api/v1/store/product");
-
-      final decoded = JSON.jsonDecode(response.toString());
-
-      print(decoded['msg']);
-      return decoded['msg'];
-    } catch (e) {
-      print(e);
-    }
-
-    return null;
-  }
 }

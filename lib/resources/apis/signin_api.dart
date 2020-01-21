@@ -25,7 +25,7 @@ class SigninAPI {
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 12.0);
-    } else {
+    } else if (error == "0") {
       Fluttertoast.showToast(
           msg: decoded['msg'],
           toastLength: Toast.LENGTH_SHORT,

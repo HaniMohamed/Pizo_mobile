@@ -7,15 +7,20 @@ class Order {
   String orderOwner;
   String orderEnginner;
   bool finished;
+  var lat, lan;
+  var orderOwnerID;
 
   Order(String orderName, int orderCategory, String orderDescribtion,
-      String orderOwner, String orderEnginner, bool finished) {
+      String orderOwner, String orderEnginner, bool finished, lat, lan, orderOwnerID) {
     this.orderName = orderName;
     this.orderCategory = orderCategory;
     this.orderDescribtion = orderDescribtion;
     this.orderOwner = orderOwner;
     this.orderEnginner = orderEnginner;
     this.finished = finished;
+    this.lat = lat;
+    this.lan = lan;
+    this.orderOwnerID = orderOwnerID;
   }
 
   String getName() {
@@ -40,5 +45,16 @@ class Order {
 
   bool ifFinished() {
     return finished;
+  }
+
+  getLat() {
+    return lat;
+  }
+
+  getLan() {
+    return lan;
+  }
+   getOwnerID() {
+    return orderOwnerID;
   }
 }

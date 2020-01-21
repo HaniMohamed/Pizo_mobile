@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:pizo/ui/screens/main_page.dart';
 import 'package:pizo/ui/screens/splash_screen.dart';
 
-void main() => runApp(MyApp());
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart'
+    show debugDefaultTargetPlatformOverride;
+
+void main() {
+  debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.

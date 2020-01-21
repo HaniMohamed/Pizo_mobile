@@ -2,11 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pizo/models/product.dart';
+import 'package:pizo/resources/apis/messages_api_provider.dart';
 import 'package:pizo/resources/constants.dart';
+import 'package:pizo/resources/sharedprefs.dart';
+import 'package:pizo/ui/screens/chat_screen.dart';
 
 Product product;
 String heroTag;
 Constants cons = new Constants();
+String email, token;
 
 class ProductDetails extends StatefulWidget {
   ProductDetails(Product recievedProduct, String recievedTag) {
@@ -21,6 +25,23 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetails extends State<ProductDetails> {
+  @override
+  void initState() {
+    super.initState();
+
+    SharedPrefs().getSharedMail().then((mail) {
+      setState(() {
+        email = mail;
+      });
+    });
+
+    SharedPrefs().getSharedToken().then((tok) {
+      setState(() {
+        token = tok;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -43,6 +64,30 @@ class _ProductDetails extends State<ProductDetails> {
                         height: 250,
                         width: double.infinity,
                         fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => new Container(
+                          height: 250,
+                          child: Icon(Icons.error),
+                        ),
+                      ),
+                      Positioned.fill(
+                        top: 15,
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              color: Colors.black.withAlpha(120),
+                              padding: EdgeInsets.all(10),
+                              child: Icon(
+                                Icons.arrow_back_ios,
+                                color: Colors.white,
+                                size: 25,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                       Positioned.fill(
                           bottom: 5,
@@ -52,46 +97,75 @@ class _ProductDetails extends State<ProductDetails> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                Card(
+                                GestureDetector(
+                                  onTap: () {
+                                    SharedPrefs()
+                                        .setSharedFavourite(product.getID());
+                                  },
+                                  child: Card(
+                                      elevation: 5,
+                                      color: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      semanticContainer: false,
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        child: Icon(
+                                          Icons.favorite,
+                                          size: 20,
+                                          color: Colors.red,
+                                        ),
+                                      )),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    MessagesAPI()
+                                        .createConversation(
+                                            token,
+                                            product.getOwnerID().toString(),
+                                            email + ">" + product.getTitle())
+                                        .then((id) {
+                                      print(id);
+                                      if (id != null) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => ChatScreen(
+                                                id,
+                                                product.getTitle(),
+                                              ),
+                                            ));
+                                      }
+                                    });
+                                  },
+                                  child: Card(
                                     elevation: 5,
-                                    color: Colors.white,
+                                    color: Colors.green,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                     semanticContainer: false,
                                     clipBehavior: Clip.antiAliasWithSaveLayer,
                                     child: Container(
-                                      padding: EdgeInsets.all(5),
-                                      child: Icon(
-                                        Icons.favorite,
-                                        size: 20,
-                                        color: Colors.red,
-                                      ),
-                                    )),
-                                Card(
-                                  elevation: 5,
-                                  color: Colors.green,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
+                                        padding: EdgeInsets.all(5),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Icon(Icons.chat_bubble,
+                                                size: 20, color: Colors.white),
+                                            Text(
+                                              " Contact",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14),
+                                            )
+                                          ],
+                                        )),
                                   ),
-                                  semanticContainer: false,
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  child: Container(
-                                      padding: EdgeInsets.all(5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Icon(Icons.chat_bubble,
-                                              size: 20, color: Colors.white),
-                                          Text(
-                                            " Contact",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14),
-                                          )
-                                        ],
-                                      )),
                                 ),
                               ],
                             ),

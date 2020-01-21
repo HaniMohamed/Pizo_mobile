@@ -36,7 +36,7 @@ class SignupAPI {
           textColor: Colors.white,
           fontSize: 12.0);
       print(decoded['msg']);
-    } else {
+    } else if (error == "0") {
       Fluttertoast.showToast(
           msg: decoded['msg'],
           toastLength: Toast.LENGTH_SHORT,

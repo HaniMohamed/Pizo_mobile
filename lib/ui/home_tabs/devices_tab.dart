@@ -1,17 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pizo/models/product.dart';
 import 'package:pizo/resources/apis/devices_api_provider.dart';
 import 'package:pizo/resources/constants.dart';
-import 'package:pizo/widgets/lists/products_list.dart';
-import 'package:dio/dio.dart';
+import 'package:pizo/ui/screens/post_used_device.dart';
+import 'package:pizo/ui/widgets/lists/products_list.dart';
 
 Constants cons = new Constants();
 
 class DevicesTab extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _DevicesTab();
   }
 }
@@ -29,6 +27,23 @@ class _DevicesTab extends State<DevicesTab>
   List _categories = cons.dev_categories;
   TabController _tabController;
 
+  Future<bool> getData() {
+    DevicesAPi().getDevices().then((prods) {
+      setState(() {
+        products = prods;
+        devices = products
+            .where((p) => p.getCategoryID() == _currentCategory)
+            .toList();
+        print(devices.length.toString());
+        devices = devices
+            .where((p) =>
+                p.getSpecializationID() == _currentSpecializationIndex + 1)
+            .toList();
+      });
+    });
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -40,84 +55,103 @@ class _DevicesTab extends State<DevicesTab>
     _currentSpecialization = _dropDownMenuItems[0].value;
     _currentSpecializationIndex = 0;
     _currentCategory = 2;
-    DevicesAPi().getDevices().then((products) {
-      devices =
-          products.where((p) => p.getCategoryID() == _currentCategory).toList();
-      devices = products
-          .where(
-              (p) => p.getSpecializationID() == _currentSpecializationIndex + 1)
-          .toList();
-      setState(() {});
-    });
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.all(0),
-      shrinkWrap: true,
+    return Stack(
       children: <Widget>[
-        CachedNetworkImage(
-          imageUrl:
-              "https://png.pngtree.com/element_origin_min_pic/16/10/09/1557f9ecb06db32.jpg",
-          height: 90,
-          fit: BoxFit.cover,
-        ),
-        TabBar(
-          unselectedLabelColor: Colors.grey.withAlpha(80),
-          labelColor: Colors.grey,
-          controller: _tabController,
-          tabs: <Widget>[
-            Tab(
-              child: Text("New"),
+        ListView(
+          padding: EdgeInsets.all(0),
+          shrinkWrap: true,
+          children: <Widget>[
+            TabBar(
+              unselectedLabelColor: Colors.grey.withAlpha(80),
+              labelColor: Colors.grey,
+              controller: _tabController,
+              tabs: <Widget>[
+                Tab(
+                  child: Text("New"),
+                ),
+                Tab(
+                  child: Text("Used"),
+                )
+              ],
             ),
-            Tab(
-              child: Text("Used"),
-            )
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: new Container(
+                      margin: EdgeInsets.all(5),
+                      height: 1.0,
+                      color: Colors.grey.withAlpha(50),
+                    ),
+                  ),
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      value: _currentSpecialization,
+                      items: _dropDownMenuItems,
+                      onChanged: changedDropDownItem,
+                    ),
+                  )
+                ],
+              ),
+              padding: EdgeInsets.only(top: 0, left: 10, right: 10),
+            ),
+            Container(
+              child: devices != null && devices.length > 0
+                  ? ProductsList(devices, devices.length)
+                  : Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.all(100),
+                      child: Text(
+                        "No Items.!!",
+                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                      ),
+                    ),
+            ),
           ],
         ),
-        Container(
-          margin: EdgeInsets.only(top: 10),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: new Container(
-                  margin: EdgeInsets.all(5),
-                  height: 1.0,
-                  color: Colors.grey.withAlpha(50),
-                ),
-              ),
-              DropdownButtonHideUnderline(
-                child: DropdownButton(
-                  value: _currentSpecialization,
-                  items: _dropDownMenuItems,
-                  onChanged: changedDropDownItem,
-                ),
-              )
-            ],
+        Positioned.fill(
+          bottom: 15,
+          right: 15,
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: tabIndex == 0
+                ? Container()
+                : FloatingActionButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PostDevice()),
+                      );
+                    },
+                    backgroundColor: Colors.blue,
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
+                  ),
           ),
-          padding: EdgeInsets.only(top: 0, left: 10, right: 10),
-        ),
-        Container(
-          child: devices.length > 0
-              ? ProductsList(devices, devices.length)
-              : Container(),
-        ),
+        )
       ],
     );
   }
 
   void changedDropDownItem(String selectedCategory) {
-    print("Selected city $selectedCategory, we are going to refresh the UI");
     setState(() {
       _currentSpecialization = selectedCategory;
       _currentSpecializationIndex = _categories.indexOf(selectedCategory);
-      setState(() {
-        devices = products
-            .where((p) =>
-                p.getSpecializationID() == _currentSpecializationIndex + 1)
-            .toList();
-      });
+      devices =
+          products.where((p) => p.getCategoryID() == _currentCategory).toList();
+      devices = devices
+          .where(
+              (p) => p.getSpecializationID() == _currentSpecializationIndex + 1)
+          .toList();
+      print(devices.length.toString());
     });
   }
 
@@ -138,10 +172,11 @@ class _DevicesTab extends State<DevicesTab>
       _currentCategory = tabIndex == 0 ? 2 : 1;
       devices =
           products.where((p) => p.getCategoryID() == _currentCategory).toList();
-      devices = products
+      devices = devices
           .where(
               (p) => p.getSpecializationID() == _currentSpecializationIndex + 1)
           .toList();
+      print(devices.length.toString());
       setState(() {});
     });
   }
